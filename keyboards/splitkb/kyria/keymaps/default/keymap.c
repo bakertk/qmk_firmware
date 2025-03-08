@@ -18,6 +18,7 @@
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
 
+
 /*
  #define _LAYER0 0
  #define _LAYER1 1
@@ -50,6 +51,7 @@ enum custom_keycodes {
     ALT_TAB, // = SAFE_RANGE,
 };
 
+
 // Aliases for readability
 #define QWERTY   DF(_QWERTY)
 #define COLEMAK  DF(_COLEMAK_DH)
@@ -64,6 +66,7 @@ enum custom_keycodes {
 #define CTL_QUOT MT(MOD_RCTL, KC_QUOTE)
 #define CTL_MINS MT(MOD_RCTL, KC_MINUS)
 #define ALT_ENT  MT(MOD_LALT, KC_ENT)
+
 
 // Note: LAlt/Enter (ALT_ENT) is not the same thing as the keyboard shortcut Alt+Enter.
 // The notation `mod/tap` denotes a key that activates the modifier `mod` when held down, and
@@ -121,6 +124,7 @@ enum custom_keycodes {
     return true;
 };
 
+
 void matrix_scan_user(void) { // The very important timer.
     if (is_alt_tab_active) {
         if (timer_elapsed(alt_tab_timer) > 1000) {
@@ -129,6 +133,7 @@ void matrix_scan_user(void) { // The very important timer.
         }
     }
   }
+
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -153,7 +158,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             LALT(KC_DEL), KC_LCTL, KC_LSFT, LT(1,KC_TAB), KC_BSPC, KC_SPC, LT(2,KC_MINS), KC_RSFT, KC_NO, LGUI(KC_L)),
 
 [_NAVNUM] = LAYOUT(
-            KC_NO, LCTL(KC_LSFT), LGUI(KC_NO), LGUI(KC_NO), LGUI(KC_NO), KC_LCBR, KC_RCBR, KC_P7, KC_P8, KC_P9, KC_NO, KC_NO,
+            KC_NO, LCTL(KC_LSFT), LGUI(KC_LEFT), LGUI(KC_UP), LGUI(KC_RIGHT), KC_LCBR, KC_RCBR, KC_P7, KC_P8, KC_P9, KC_NO, KC_NO,
             KC_NO, KC_LSFT, KC_LEFT, KC_UP, KC_RGHT, KC_LBRC, KC_RBRC, KC_P4, KC_P5, KC_P6, KC_NO, KC_NO,
             KC_NO, KC_NO, LCTL(KC_LEFT), KC_DOWN, LCTL(KC_RGHT), KC_LPRN, KC_NO, KC_NO, KC_NO, KC_NO, KC_RPRN, KC_P1, KC_P2, KC_P3, KC_PSLS, KC_NO,
             KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_ENT, KC_SPC, KC_P0, KC_NO, KC_NO),
@@ -162,7 +167,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_NO, KC_EXLM, KC_AT, KC_HASH, KC_DLR, KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_NO, KC_NO, KC_NO,
             KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, WORKPROD, GAMINGPC, KC_NO, KC_NO, KC_NO, KC_NO,
             KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, WORKNONPROD, KC_PEQL, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO),
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, LGUI(KC_L), KC_NO, KC_NO),
 
 [_GAMECHOICE] = LAYOUT(
             KC_NO, KC_NO, KC_NO, KC_NO, TO(4), TO(5), KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
@@ -204,7 +209,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //COMBOS
 enum combo_events {
     ENTER,
-    BSPCF5_LSFT_CLEAR,
+    REFRESH,
     PRNTSCRN,
   };
 
@@ -214,7 +219,7 @@ const uint16_t PROGMEM snagit[] = {KC_TAB, KC_MINS, COMBO_END};
 
 combo_t key_combos[] = {
     [ENTER]     = COMBO_ACTION(enter), //COMBO(enter, KC_ENT),
-    [F5]        = COMBO_ACTION(bangit), //COMBO(bangit, KC_F5),
+    [REFRESH]        = COMBO_ACTION(bangit), //COMBO(bangit, KC_F5),
     [PRNTSCRN]  = COMBO_ACTION(snagit),  //COMBO(snagit, KC_F5),
 };
 
@@ -225,7 +230,7 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
                 tap_code16(KC_ENT);
             }
             break;
-        case F5:
+        case REFRESH:
             if (pressed) {
                 tap_code16(KC_F5);
             }
