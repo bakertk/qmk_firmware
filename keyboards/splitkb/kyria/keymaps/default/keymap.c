@@ -18,20 +18,6 @@
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
 
-
-/*
- #define _LAYER0 0
- #define _LAYER1 1
- #define _LAYER2 2
- #define _LAYER3 3
- #define _LAYER4 4
- #define _LAYER5 5
- #define _LAYER6 6
- #define _LAYER7 7
- #define _LAYER8 8
- #define _LAYER9 9
-*/
-
  enum layers {
     _MAIN = 0,
     _NAVNUM,
@@ -45,10 +31,11 @@ uint16_t alt_tab_timer = 0;
 };
 
 enum custom_keycodes {
-    WORKPROD, //= SAFE_RANGE,
-    WORKNONPROD, // = SAFE_RANGE,
-    GAMINGPC, // = SAFE_RANGE,
-    ALT_TAB, // = SAFE_RANGE,
+    WORKPROD = SAFE_RANGE,
+    WORKNONPROD,
+    GAMINGPC,
+    ALT_TAB,
+    //ALT_SHIFT_TAB,
 };
 
 
@@ -79,7 +66,8 @@ enum custom_keycodes {
             if (record->event.pressed) {
                 // when keycode WORKPROD is pressed
                 SEND_STRING("Rennatrekab03210");
-                SEND_STRING(SS_TAP(X_ENT));
+                //SEND_STRING(SS_TAP(X_ENT));
+                tap_code(KC_ENT);
             }
             else {
                 // when keycode WORKPROD is released
@@ -90,7 +78,8 @@ enum custom_keycodes {
             if (record->event.pressed) {
                 // when keycode WORKNONPROD is pressed
                 SEND_STRING("Rolyatrekab03210");
-                SEND_STRING(SS_TAP(X_ENT));
+                //SEND_STRING(SS_TAP(X_ENT));
+                tap_code(KC_ENT);
             }
             else {
                 // when keycode WORKNONPROD is released
@@ -120,7 +109,21 @@ enum custom_keycodes {
                 unregister_code(KC_TAB);
             }
             break;
-        }
+        /*
+            case ALT_SHIFT_TAB:
+            if (record->event.pressed) {
+                if (!is_alt_tab_active) {
+                    is_alt_tab_active = true;
+                    register_code(KC_LALT);
+                 }
+                alt_tab_timer = timer_read();
+                register_code(KC_TAB);
+            }
+            else {
+                unregister_code(KC_TAB);
+            }
+            break;*/
+    }
     return true;
 };
 
@@ -141,69 +144,78 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * Base Layer: _MAIN
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |  Tab   |   Q  |   W  |   E  |   R  |   T  |                              |   Y  |   U  |   I  |   O  |   P  |  Bksp  |
+ * |  ESC/` |   Q  |   W  |   E  |   R  |   T  |                              |   Y  |   U  |   I  |   O  |   P  |  + =   |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |Ctrl/Esc|   A  |   S  |   D  |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |Ctrl/' "|
+ * |TAB/[3] |   A  |   S  |   D  |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |  ' "   |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | LShift |   Z  |   X  |   C  |   V  |   B  | [ {  |CapsLk|  |F-keys|  ] } |   N  |   M  | ,  < | . >  | /  ? | RShift |
+ * | LGUI   |   Z  |   X  |   C  |   V  |   B  | [ {  | Del  |  |CapsLk|  ] } |   N  |   M  | ,  < | . >  | /  ? |  -  _  |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        |Adjust| LGUI | LAlt/| Space| Nav  |  | Sym  | Space| AltGr| RGUI | Menu |
- *                        |      |      | Enter|      |      |  |      |      |      |      |      |
+ *                        |  Alt | Ctrl | Shift|Tab[1]| Bkspc|  | Space|   -  | Shift| none |AltTab|
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
 [_MAIN] = LAYOUT(
-            KC_ESC, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_EQL,
-            LT(3,KC_TAB), KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT,
-            KC_LGUI, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_LBRC, KC_CAPS, KC_NO, KC_RBRC, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_MINS,
-            LALT(KC_DEL), KC_LCTL, KC_LSFT, LT(1,KC_TAB), KC_BSPC, KC_SPC, LT(2,KC_MINS), KC_RSFT, KC_NO, LGUI(KC_L)),
+            QK_GESC, KC_Q, KC_W, KC_E, KC_R, KC_T,                                          KC_Y, KC_U, KC_I, KC_O, KC_P, KC_EQL,
+            LT(3,KC_TAB), KC_A, KC_S, KC_D, KC_F, KC_G,                                     KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT,
+            KC_LGUI, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_LBRC, KC_DEL,                         KC_CAPS, KC_RBRC, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_MINS,
+            KC_LALT, KC_LCTL, KC_LSFT, LT(1,KC_TAB), KC_BSPC,                                KC_SPC, LT(2,KC_MINS), KC_RSFT, LSFT(KC_TAB), ALT_TAB
+        ),
 
 [_NAVNUM] = LAYOUT(
-            KC_NO, LCTL(KC_LSFT), LGUI(KC_LEFT), LGUI(KC_UP), LGUI(KC_RIGHT), KC_LCBR, KC_RCBR, KC_P7, KC_P8, KC_P9, KC_NO, KC_NO,
-            KC_NO, KC_LSFT, KC_LEFT, KC_UP, KC_RGHT, KC_LBRC, KC_RBRC, KC_P4, KC_P5, KC_P6, KC_NO, KC_NO,
-            KC_NO, KC_NO, LCTL(KC_LEFT), KC_DOWN, LCTL(KC_RGHT), KC_LPRN, KC_NO, KC_NO, KC_NO, KC_NO, KC_RPRN, KC_P1, KC_P2, KC_P3, KC_PSLS, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_ENT, KC_SPC, KC_P0, KC_NO, KC_NO),
+            KC_NO, LCTL(KC_LSFT), LGUI(KC_LEFT), LGUI(KC_UP), LGUI(KC_RIGHT), KC_LCBR,      KC_RCBR, KC_P7, KC_P8, KC_P9, KC_NO, KC_NO,
+            KC_NO, KC_LSFT, KC_LEFT, KC_UP, KC_RGHT, KC_LBRC,                               KC_RBRC, KC_P4, KC_P5, KC_P6, KC_NO, KC_NO,
+            KC_NO, KC_NO, LCTL(KC_LEFT), KC_DOWN, LCTL(KC_RGHT), KC_LPRN, KC_NO, KC_NO,     KC_NO, KC_NO, KC_RPRN, KC_P1, KC_P2, KC_P3, KC_PSLS, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                              KC_ENT, KC_SPC, KC_P0, KC_NO, KC_NO
+        ),
 
 [_SYMBOLS] = LAYOUT(
-            KC_NO, KC_EXLM, KC_AT, KC_HASH, KC_DLR, KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, WORKPROD, GAMINGPC, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, WORKNONPROD, KC_PEQL, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, LGUI(KC_L), KC_NO, KC_NO),
+            KC_NO, KC_EXLM, KC_AT, KC_HASH, KC_DLR, KC_PERC,                                KC_CIRC, KC_AMPR, KC_ASTR, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                       WORKPROD, GAMINGPC, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                         WORKNONPROD, KC_NO, KC_NO, KC_PEQL, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_DEL,                                              KC_NO, KC_NO, LGUI(KC_L), KC_NO, KC_NO
+        ),
 
 [_GAMECHOICE] = LAYOUT(
-            KC_NO, KC_NO, KC_NO, KC_NO, TO(4), TO(5), KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_TRNS, KC_NO, KC_NO, KC_NO, TO(6), TO(7), KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, TO(8), TO(9), KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO),
+            KC_NO, KC_NO, KC_NO, KC_NO, TO(4), TO(5),                                       KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_TRNS, KC_NO, KC_NO, KC_NO, TO(6), TO(7),                                     KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, TO(8), TO(9), KC_NO, KC_NO,                         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                              KC_NO, KC_NO, KC_NO, KC_NO, KC_NO
+        ),
 
 [_Splitgate] = LAYOUT(
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, TO(0), KC_NO, KC_NO, KC_NO, KC_NO),
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                       KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                       KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                              TO(0), KC_NO, KC_NO, KC_NO, KC_NO
+        ),
 
 [_Destiny2] = LAYOUT(
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, TO(0), KC_NO, KC_NO, KC_NO, KC_NO),
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                       KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                       KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                              TO(0), KC_NO, KC_NO, KC_NO, KC_NO
+        ),
 
 [_RocketLeague] = LAYOUT(
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, TO(0), KC_NO, KC_NO, KC_NO, KC_NO),
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                       KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                       KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                              TO(0), KC_NO, KC_NO, KC_NO, KC_NO
+        ),
 
 [_Spiderheck] = LAYOUT(
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, TO(0), KC_NO, KC_NO, KC_NO, KC_NO),
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                       KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                       KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                              TO(0), KC_NO, KC_NO, KC_NO, KC_NO
+        ),
 
 [_Undefined] = LAYOUT(
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, TO(0), KC_NO, KC_NO, KC_NO, KC_NO),
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                       KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                       KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+            KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,                                              TO(0), KC_NO, KC_NO, KC_NO, KC_NO
+        ),
 };
 
 //COMBOS
