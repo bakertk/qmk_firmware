@@ -14,7 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
+ #pragma once
+
+ #define OLED_DISPLAY_128X64
+ #define SPLIT_OLED_ENABLE
+ #define SPLIT_LED_STATE_ENABLE
+ #define SPLIT_LAYER_STATE_ENABLE
+ #define COMBO_ALLOW_ACTION_KEYS
 
 #ifdef RGBLIGHT_ENABLE
 #    define RGBLIGHT_EFFECT_BREATHING
